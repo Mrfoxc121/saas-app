@@ -1,3 +1,4 @@
+import daisyui from "daisyui"
 import type { Config } from "tailwindcss"
 
 const config = {
@@ -74,7 +75,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), daisyui,],
 } satisfies Config
 
 export default config

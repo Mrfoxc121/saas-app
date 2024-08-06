@@ -10,6 +10,7 @@ import { useUser } from '@clerk/nextjs'
 import { collection, orderBy, query } from 'firebase/firestore'
 import { db } from '@/firebase'
 import ChatMessage from './ChatMessage'
+import { useToast } from './ui/use-toast'
 
 
 
@@ -23,6 +24,7 @@ export type Message = {
 
 function Chat({ id }: { id: string }) {
     const { user } = useUser();
+    const { toast } = useToast();
 
     const [input, setInput] = useState('');
     const [isPending, startTrasition] = useTransition();
@@ -95,7 +97,11 @@ function Chat({ id }: { id: string }) {
 
             if (!success) {
                 // toast
-
+                toast({
+                    title: "Error",
+                    description: message,
+                    variant: "destructive",
+                })
                 setMessages((prev) =>
                     prev.slice(0, prev.length - 1).concat([
                         {

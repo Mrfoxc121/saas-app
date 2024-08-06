@@ -2,6 +2,8 @@ import Header from "@/components/header";
 import { ClerkLoaded } from "@clerk/nextjs"
 
 
+
+
 function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
         <ClerkLoaded>

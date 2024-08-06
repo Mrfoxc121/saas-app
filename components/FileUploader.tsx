@@ -10,13 +10,17 @@ import {
 } from "lucide-react"
 import useUpload, { StatusText } from '@/hooks/useUpload'
 import { useRouter } from 'next/navigation'
+import { useToast } from './ui/use-toast'
+import useSubscription from '@/hooks/useSubscription'
 
 
 
 
 function FileUploader() {
-    const { progress, status, fileId, handleUpload } = useUpload()
-    const router = useRouter()
+    const { progress, status, fileId, handleUpload } = useUpload();
+    const { isOverFileLimit, filesLoading } = useSubscription();
+    const router = useRouter();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (fileId) {
@@ -29,12 +33,21 @@ function FileUploader() {
 
         const file = acceptedFiles[0];
         if (file) {
-            await handleUpload(file)
-        } else {
-            // do nothing
+            if (!isOverFileLimit && !filesLoading) {
+              await handleUpload(file);
+            } else {
+              toast({
+                variant: "destructive",
+                title: "Free Plan File Limit Reached",
+                description:
+                  "You have reached the maximum number of files allowed for your account. Please upgrade to add more documents.",
+              });
+            }
+          } else {
+            // do nothing...
             // toast...
-        }
-    }, [handleUpload])
+          }
+    }, [handleUpload, isOverFileLimit, filesLoading, toast])
 
     const statusIcons: {
         [key in StatusText]: JSX.Element;
@@ -49,7 +62,7 @@ function FileUploader() {
         [StatusText.GENERATING]: (
             <HammerIcon className='h-20 w-20 text-indigo-600 animate-bounce' />
         ),
-    
+
     }
     const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept } = useDropzone({
         onDrop,
@@ -68,14 +81,14 @@ function FileUploader() {
                 <div className="mt-32 flex flex-col justify-center items-center gap-5">
                     <div className={`radial-progress bg-indigo-300 text-white border-indigo-600 border-4 ${progress === 100 && "hidden"
 
-                    }`}
-                    role="progressbar"
-                    style={{
-                        // @ts-ignore
-                        "--value": progress,
-                        "--size": "12rem",
-                        "--thickness": "1.3rem",
-                    }}
+                        }`}
+                        role="progressbar"
+                        style={{
+                            // @ts-ignore
+                            "--value": progress,
+                            "--size": "12rem",
+                            "--thickness": "1.3rem",
+                        }}
                     >
                         {progress} %
                     </div>

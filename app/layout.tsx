@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata: Metadata = {
@@ -16,7 +18,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen h-screen overflow-hidden flex flex-col">{children}</body>
+        <body className="min-h-screen h-screen overflow-hidden flex flex-col">
+          <Toaster />
+          {children}
+          </body>
       </html>
     </ClerkProvider>
 
